@@ -5,9 +5,18 @@ description: How to setup GH Pages + GH Actions for use with Jekyll 4
 
 ### Built settings ###
 
-url: "https://michaelcurrin.github.io"
-baseurl: "/jekyll-actions-quickstart"
+url: "https://akatief.github.io"
+baseurl: "/jekylltest"
 
 github_username: MichaelCurrin
 
-theme: minima
+plugins:
+  - jekyll-include-cache
+  - jekyll-remote-theme
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
+  
+remote_theme: mmistakes/minimal-mistakes
