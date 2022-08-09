@@ -1,6 +1,7 @@
 ---
 title: About Actions
-layout: page
+layout: archive
+author_profile: true
 ---
 
 ## Comparison

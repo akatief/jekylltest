@@ -1,32 +1,66 @@
 ---
-layout: home
+title: "Splash Page"
+layout: splash
+date: 2016-03-23T11:48:41-04:00
+header:
+  overlay_color: "#000"
+  overlay_filter: "0.5"
+  overlay_image: /assets/images/forest.jpg
+  actions:
+    - label: "Download"
+      url: "https://github.com/mmistakes/minimal-mistakes/"
+  caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
+excerpt: "Bacon ipsum dolor sit amet salami ham hock ham, hamburger corned beef short ribs kielbasa biltong t-bone drumstick tri-tip tail sirloin pork chop."
+intro: 
+  - excerpt: 'Nullam suscipit et nam, tellus velit pellentesque at malesuada, enim eaque. Quis nulla, netus tempor in diam gravida tincidunt, *proin faucibus* voluptate felis id sollicitudin. Centered with `type="center"`'
+feature_row:
+  - image_path: assets/images/forest.jpg
+    alt: "placeholder image 1"
+    title: "Placeholder 1"
+    excerpt: "This is some sample content that goes here with **Markdown** formatting."
+  - image_path: /assets/images/forest.jpg
+    image_caption: "Image courtesy of [Unsplash](https://unsplash.com/)"
+    alt: "placeholder image 2"
+    title: "Placeholder 2"
+    excerpt: "This is some sample content that goes here with **Markdown** formatting."
+    url: "#test-link"
+    btn_label: "Read More"
+    btn_class: "btn--primary"
+  - image_path: /assets/images/forest.jpg
+    title: "Placeholder 3"
+    excerpt: "This is some sample content that goes here with **Markdown** formatting."
+feature_row2:
+  - image_path: /assets/images/forest.jpg
+    alt: "placeholder image 2"
+    title: "Placeholder Image Left Aligned"
+    excerpt: 'This is some sample content that goes here with **Markdown** formatting. Left aligned with `type="left"`'
+    url: "#test-link"
+    btn_label: "Read More"
+    btn_class: "btn--primary"
+feature_row3:
+  - image_path: /assets/images/forest.jpg
+    alt: "placeholder image 2"
+    title: "Placeholder Image Right Aligned"
+    excerpt: 'This is some sample content that goes here with **Markdown** formatting. Right aligned with `type="right"`'
+    url: "#test-link"
+    btn_label: "Read More"
+    btn_class: "btn--primary"
+feature_row4:
+  - image_path: /assets/images/forest.jpg
+    alt: "placeholder image 2"
+    title: "Placeholder Image Center Aligned"
+    excerpt: 'This is some sample content that goes here with **Markdown** formatting. Centered with `type="center"`'
+    url: "#test-link"
+    btn_label: "Read More"
+    btn_class: "btn--primary"
 ---
 
-> {{ site.description }}
+{% include feature_row id="intro" type="center" %}
 
-[![MichaelCurrin - jekyll-actions-quickstart](https://img.shields.io/static/v1?label=MichaelCurrin&message=jekyll-actions-quickstart&color=blue&logo=github)](https://github.com/MichaelCurrin/jekyll-actions-quickstart)
-[![stars - jekyll-actions-quickstart](https://img.shields.io/github/stars/MichaelCurrin/jekyll-actions-quickstart?style=social)](https://github.com/MichaelCurrin/jekyll-actions-quickstart)
-[![forks - jekyll-actions-quickstart](https://img.shields.io/github/forks/MichaelCurrin/jekyll-actions-quickstart?style=social)](https://github.com/MichaelCurrin/jekyll-actions-quickstart)
+{% include feature_row %}
 
-[![Made with Jekyll](https://img.shields.io/badge/Jekyll-4.x-blue?logo=jekyll&logoColor=white)](https://jekyllrb.com)
-[![Made with Jekyll Actions](https://img.shields.io/badge/Jekyll_Actions-2.x-blue.svg)](https://github.com/marketplace/actions/jekyll-actions)
+{% include feature_row id="feature_row2" type="left" %}
 
+{% include feature_row id="feature_row3" type="right" %}
 
-## Purpose
-
-This project has the following purposes:
-
-### Information
-
-- [About Actions]({% link about.md %}) page - this describes how you can use a custom CI flow with GitHub Actions to serve on GitHub Pages.
-- [Tutorial]({% link tutorial.md %}) page - instructions and resources to add Actions to your Jekyll site.
-
-### Template
-
-- Get a copy of this repo in your GH user - click this: [![Use this template](https://img.shields.io/badge/Generate-Use_this_template-2ea44f)](https://github.com/MichaelCurrin/jekyll-actions-quickstart/generate)
-
-### Live demo
-
-- This site shows the result of a static site built with Jekyll Actions, using Jekyll 4 and a custom plugin.
-- See the custom plugin in action on the [Time ago]({% link time-ago.md %}) page.
-- See this site's [repo](https://github.com/MichaelCurrin/jekyll-actions-quickstart) to see how this project is setup. Note the GH workflows section and the `sample_site` directory which is found _automatically_ because of the config file.
+{% include feature_row id="feature_row4" type="center" %}

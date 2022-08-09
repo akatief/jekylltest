@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "jekyll-remote-theme"
 gem "jekyll-relative-links"
-
+gem 'jekyll-archives'
 gem "jekyll-include-cache", group: :jekyll_plugins
 
 gem "jekyll", "~> 4.2"
