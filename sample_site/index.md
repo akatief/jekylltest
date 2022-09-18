@@ -1,4 +1,17 @@
 ---
+layout: home
+author_profile: true
+header:
+  overlay_color: "#000"
+  overlay_filter: "0.5"
+  overlay_image: /assets/images/forest.jpg
+  actions:
+    - label: "Download"
+      url: "https://github.com/mmistakes/minimal-mistakes/"
+  caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
+---
+
+<!-- ---
 title: "Splash Page"
 layout: splash
 date: 2016-03-23T11:48:41-04:00
@@ -63,4 +76,4 @@ feature_row4:
 
 {% include feature_row id="feature_row3" type="right" %}
 
-{% include feature_row id="feature_row4" type="center" %}
+{% include feature_row id="feature_row4" type="center" %} -->

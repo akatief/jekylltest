@@ -37,5 +37,21 @@ jekyll-archives:
     tag: '/tag/:name/'
     category: '/category/:name/'
 
+# Markdown settings
+markdown: kramdown
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      share: true
+      related: true
+
 remote_theme: mmistakes/minimal-mistakes
 minimal_mistakes_skin: "air" # "aqua", "default", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
