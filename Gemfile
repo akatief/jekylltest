@@ -12,4 +12,10 @@ gem "minima", "~> 2.5"
 
 group :jekyll_plugins do
   gem "jekyll-timeago", "~> 0.13.1"
+  gem 'jekyll-feed', '~> 0.13'
+  gem 'jekyll-sitemap', '~> 1.4'
+  gem 'jekyll-compose', '~> 0.12.0'
+  gem 'jekyll-postfiles', '~> 3.1'
+  gem 'jekyll-scholar', '~> 6.8.0'
+
 end

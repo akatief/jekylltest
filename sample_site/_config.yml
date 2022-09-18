@@ -22,6 +22,10 @@ plugins:
   - jekyll-remote-theme
   - jekyll-relative-links
   - jekyll-archives
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-postfiles
+  - jekyll-scholar
 
 relative_links:
   enabled: true
@@ -36,9 +40,6 @@ jekyll-archives:
     day: '/:year/:month/:day/'
     tag: '/tag/:name/'
     category: '/category/:name/'
-
-# Markdown settings
-markdown: kramdown
 
 defaults:
   # _posts
