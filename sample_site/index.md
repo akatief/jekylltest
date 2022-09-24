@@ -1,13 +1,11 @@
 ---
 layout: home
-author_profile: true
+author_profile: false
+classes: wide
 header:
   overlay_color: "#000"
   overlay_filter: "0.5"
   overlay_image: /assets/images/forest.jpg
-  actions:
-    - label: "Download"
-      url: "https://github.com/mmistakes/minimal-mistakes/"
   caption: "Photo credit: [**Unsplash**](https://unsplash.com)"
 ---
 
