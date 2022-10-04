@@ -31,6 +31,8 @@ relative_links:
   enabled: true
   collections: true
 
+markdown: kramdown
+
 jekyll-archives:
   enabled: all # []
   layout: archive
