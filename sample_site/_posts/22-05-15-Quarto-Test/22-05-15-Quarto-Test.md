@@ -19,3 +19,8 @@ axis</figcaption>
 </figure>
 
 This is a qubit: $$\ket{0}$$
+
+$$
+    \ket{0} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\; 
+    \ket{1} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}
+$$
