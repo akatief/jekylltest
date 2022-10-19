@@ -1,21 +1,16 @@
 ## Site metadata ##
 
-title: Awesome Blog
+title: Quantumist
 description: How to setup GH Pages + GH Actions for use with Jekyll 4
 name: "Federico Tiblias"
 
-author:
-  name     : "Your Name"
-  avatar   : "/assets/images/forest.jpg"
-  bio      : "My awesome biography constrained to a sentence or two goes here."
-  location : "Somewhere, USA"
-
+author: Federico Tiblias
 ### Built settings ###
 
 url: "https://akatief.github.io"
-baseurl: "/jekylltest"
+baseurl: "/quantumist"
 
-github_username: MichaelCurrin
+github_username: akatief
 
 plugins:
   - jekyll-include-cache
@@ -55,4 +50,4 @@ defaults:
       related: true
 
 remote_theme: mmistakes/minimal-mistakes
-minimal_mistakes_skin: "air" # "aqua", "default", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin: "quantum" # "air", "aqua", "default", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
