@@ -49,9 +49,6 @@ GEM
       jekyll (>= 3.7, < 5.0)
     jekyll-include-cache (0.2.1)
       jekyll (>= 3.7, < 5.0)
-    jekyll-pandoc (2.0.1)
-      jekyll (>= 3.0)
-      pandoc-ruby (~> 2.0, >= 2.0.0)
     jekyll-postfiles (3.1.0)
       jekyll (>= 3.8.6, < 5)
     jekyll-relative-links (0.6.1)
@@ -92,7 +89,6 @@ GEM
       jekyll-feed (~> 0.9)
       jekyll-seo-tag (~> 2.1)
     namae (1.1.1)
-    pandoc-ruby (2.1.6)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (5.0.0)
@@ -119,7 +115,6 @@ DEPENDENCIES
   jekyll-compose (~> 0.12.0)
   jekyll-feed (~> 0.13)
   jekyll-include-cache
-  jekyll-pandoc
   jekyll-postfiles (~> 3.1)
   jekyll-relative-links
   jekyll-remote-theme

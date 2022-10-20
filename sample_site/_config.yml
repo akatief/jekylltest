@@ -52,4 +52,4 @@ defaults:
       related: true
 
 remote_theme: mmistakes/minimal-mistakes
-minimal_mistakes_skin: "quantum" # "air", "aqua", "default", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin: "quantum" # "quantum", "air", "aqua", "default", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
