@@ -8,7 +8,7 @@ author: Federico Tiblias
 ### Built settings ###
 
 url: "https://akatief.github.io"
-baseurl: ""
+baseurl: "/jekylltest"
 
 github_username: akatief
 
