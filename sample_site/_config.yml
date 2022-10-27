@@ -1,16 +1,16 @@
 ## Site metadata ##
 
-title: Quantumist
-description: How to setup GH Pages + GH Actions for use with Jekyll 4
-name: "Federico Tiblias"
+title: The Quantumist
+description: A blog about quantum computers, machine learning and more.
+name: "The Quantumist"
 
-author: Federico Tiblias
+author: Federico Tiblias, Gilberto Manunza
 ### Built settings ###
 
-url: "https://akatief.github.io"
-baseurl: "/jekylltest"
+url: "https://The-Quantumist.github.io"
+baseurl: "/the-quantumist"
 
-github_username: akatief
+github_username: The-Quantumist
 
 plugins:
   - jekyll-include-cache

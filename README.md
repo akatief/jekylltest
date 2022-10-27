@@ -1,6 +1,6 @@
-# Quantumist
+# The Quantumist
 
-[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+[![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 
 [![Hosted with GH Pages](https://img.shields.io/badge/Hosted_with-GitHub_Pages-blue?logo=github&logoColor=white)](https://pages.github.com/)
 [![Made with GH Actions](https://img.shields.io/badge/CI-GitHub_Actions-blue?logo=github-actions&logoColor=white)](https://github.com/features/actions)
@@ -8,6 +8,7 @@
 [![Made with Jekyll](https://img.shields.io/badge/Jekyll-4.x-blue?logo=jekyll&logoColor=white)](https://jekyllrb.com)
 [![Made with Jekyll Actions](https://img.shields.io/badge/Jekyll_Actions-2.x-blue.svg)](https://github.com/marketplace/actions/jekyll-actions)
 
+[![Made with Minimal Mistakes](https://img.shields.io/badge/Made%20with-Minimal%20Mistakes-blue)]
 
 ## Purpose
 
