@@ -8,7 +8,7 @@ author: Federico Tiblias, Gilberto Manunza
 ### Built settings ###
 
 url: "https://The-Quantumist.github.io"
-baseurl: ""
+baseurl: "/the-quantumist"
 
 github_username: The-Quantumist
 
