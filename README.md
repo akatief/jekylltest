@@ -8,7 +8,7 @@
 [![Made with Jekyll](https://img.shields.io/badge/Jekyll-4.x-blue?logo=jekyll&logoColor=white)](https://jekyllrb.com)
 [![Made with Jekyll Actions](https://img.shields.io/badge/Jekyll_Actions-2.x-blue.svg)](https://github.com/marketplace/actions/jekyll-actions)
 
-[![Made with Minimal Mistakes](https://img.shields.io/badge/Made%20with-Minimal%20Mistakes-blue)]
+[![Made with Minimal Mistakes](https://img.shields.io/badge/Made%20with-Minimal%20Mistakes-blue)](https://mmistakes.github.io/minimal-mistakes/)
 
 ## Purpose
 
