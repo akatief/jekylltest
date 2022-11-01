@@ -3,7 +3,9 @@ title: "Quantum Computing for Computer Engineers"
 date: 2022-11-01
 tags:
   - Quantum Computing
-author: Gilberto Manunza, Federico Tiblias
+  - Linear Algebra
+author: Federico Tiblias
+author: Gilberto Manunza
 ---
 
 Here’s the thing about Quantum Computing: it is one of the most
@@ -54,7 +56,7 @@ is a short way of representing a vector and is called the *Dirac* notation. Our
 base states are thus:
 
 $$
-    \ket{0} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\; 
+    \ket{0} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\;\; 
     \ket{1} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}
 $$
 
@@ -86,9 +88,11 @@ state we don’t know until we take a look. This is an inherent property
 of nature: some things are not defined until they are measured. If we
 were to repeat a measurement multiple times we would observe that
 sometimes we land on $$0$$ and sometimes we land on $$1$$, with
-probabilities $$|\alpha|^2$$ and $$|\beta|^2$$ respectively. A qubit can be
-seen as a “list” of probabilities of its outcomes (more properly called *distribution*
-).
+probabilities $$|\alpha|^2$$ and $$|\beta|^2$$ respectively. A qubit can be seen as a “list” of probabilities of its outcomes (more properly called *distribution*). Since probabilities sum to $$1$$, we find that for all qubits:
+
+$$
+|\alpha|^2+|\beta|^2=1
+$$
 
 For example let’s consider the following qubits:
 
@@ -100,6 +104,7 @@ $$
         \end{bmatrix}
     \longrightarrow \Big| \frac{1}{\sqrt{2}} \Big|^2 + \Big|-\frac{1}{\sqrt{2}}\Big|^2 = 1
 $$
+
 $$
     \ket{B} = 
         \begin{bmatrix}
@@ -107,18 +112,9 @@ $$
         1 
         \end{bmatrix} 
     \longrightarrow 2 \neq 1
-$$,
-
-now since 
-
 $$
-|\alpha|^2+|\beta|^2=1
-$$,
 
-in the example shown below, $$\ket{A}$$ is a valid qubit, while $$\ket{B}$$
-is not, since its values don’t sum to $$1$$. Also observe how values inside
-state vectors can be negative and still produce valid probabilities (we
-are taking a squared norm, after all).
+Notice how in the example shown above, $$\ket{A}$$ is a valid qubit, while $$\ket{B}$$ is not, since its values don’t sum to $$1$$. Also observe how values inside state vectors can be negative and still produce valid probabilities (we are taking a squared norm, after all).
 
 Observe also how qubits can encode values that have an infinite number
 of decimal digits at no extra cost. If we keep qubits in superposition
@@ -134,9 +130,9 @@ $$
             0.7071... \\[5pt]
             -0.7071... 
         \end{bmatrix}
-$$.
+$$
 
-How great is this! But as soon as we measure a qubit, some part of it is
+How great this is! But as soon as we measure a qubit, some part of it is
 lost. We go from a potentially infinite amount of information to a
 single bit. This means there is a sort of *hidden* information encoded somewhere,
 but we can see just a part of it. This information actually exists and
@@ -146,7 +142,7 @@ clever ways to extract this hidden information in the most efficient way
 possible.
 
 An useful analogy for understanding the qubit is the Schrödinger’s cat
-(if you don’t know about this thought experiment, more info here). To
+(if you don’t know about this thought experiment, more info can be found [here](https://en.wikipedia.org/wiki/Schr%C3%B6dinger%27s_cat)). To
 recap what the experiment is about: let’s imagine to put a cat, a flask
 of poison and a source of radiation in a box. The source of radiation is
 an atom in a superposition of $$\ket{decayed}$$ and $$\ket{not\,decayed}$$.
@@ -156,10 +152,9 @@ Geiger counter will detect radioactivity (n.d.r. caused by a single atom
 decaying). So if we close the box we don’t know if the cat it’s still
 alive or dead. We can say that the cat is in a superposition of these
 states, being both alive and dead at the same time, like a qubit can
-either be $$\ket{0}$$ or $$\ket{1}$$. The point is that, when we eventually
+be both $$\ket{0}$$ and $$\ket{1}$$. The point is that, when we eventually
 open the box, the cat can not be in a mixture of the two states, it will
-be alive or dead, exactly like the qubit when measured can just be $$0$$
-or $$1$$. Why does this state collapse happens? Nobody knows, but this how
+be alive or dead, exactly how the qubit, when measured, can just be $$0$$ or $$1$$. Why does this state collapse happens? Nobody knows, but this how
 things work, you know.
 
 Back to our math, we said that the values $$|\alpha|^2+|\beta|^2=1$$, so a
@@ -167,15 +162,15 @@ qubit can be seen as a unit vector in a two dimensional complex space,
 thus we may rewrite the qubit as:
 
 $$
-    \ket{\psi}=e^{i\gamma}\left(\cos\frac{\theta}{2}\ket{0}+e^{i\phi}\sin\frac{\theta}{2}\ket{1}\right),  
+    \ket{\psi}=e^{i\gamma}\left(\cos\frac{\theta}{2}\ket{0}+e^{i\varphi}\sin\frac{\theta}{2}\ket{1}\right)  
 $$
 
-with $$\theta$$, $$\phi$$, $$\gamma$$ real numbers. Actually we can ignore the
-factor $$e^{i\phi}$$ (the reason why is outside the scope of this
+with $$\theta$$, $$\varphi$$, $$\gamma$$ real numbers. Actually we can ignore the
+factor $$e^{i\gamma}$$ (the reason why is outside the scope of this
 article), thus rewriting the qubit as:
 
 $$
-    \ket{\psi}=\cos\frac{\theta}{2}\ket{0}+e^{i\phi}\sin\frac{\theta}{2}\ket{1}.  
+    \ket{\psi}=\cos\frac{\theta}{2}\ket{0}+e^{i\varphi}\sin\frac{\theta}{2}\ket{1}
 $$
 
 We can see the qubit as a point in the 3-$$D$$ unit sphere, also called
@@ -187,7 +182,7 @@ even if it can not be generalized to multiple qubit systems.
 <div ref-parent="fig-bloch">
 
 <a href="https://en.wikipedia.org/wiki/Bloch_sphere" width="80%"><img
-src="/images/Bloch_sphere.svg.png" /></a>
+src="images/Bloch_sphere.svg.png" /></a>
 
 </div>
 
@@ -215,7 +210,9 @@ that it takes a qubit in the state:
 
 $$
 \ket{\psi} = \alpha\ket{0} + \beta\ket{1}
-$$ and outputs the qubit:
+$$ 
+
+and outputs the qubit:
 
 $$
 \ket{\psi} = \beta\ket{0} + \alpha\ket{1}
@@ -231,7 +228,7 @@ $$
 0 & 1\\
 1 & 0
 \end{bmatrix}
-$$.
+$$
 
 This is how the gate operates in matricial form:
 
@@ -254,8 +251,8 @@ $$|\alpha|^2+|\beta|^2=1$$, this means that if we let our valid qubit go
 through a quantum gate then we want a valid qubit on the way out, with
 squared values that sum to 1. With a little bit of linear algebra it is
 possible to show that for a matrix $$U$$ to be a valid quantum gate it
-should have the property: $$U^{\dagger}U=I$$. $$U^{\dagger}$$ is the adjoint
-matrix of $$U$$, obtained by taking the transpose of $$U$$ and complex
+should have the property: $$U^{\dagger}U=I$$. $$U^{\dagger}$$ is the *adjoint*
+matrix of $$U$$ (also called *Hermitian transpose*), obtained by taking the transpose of $$U$$ and complex
 conjugating it. This constraint is called Hermiticity, and any matrix
 that satisfy it is a valid quantum gate! This means that there many
 non-trivial single bit quantum gates.
@@ -267,7 +264,7 @@ $$
     1 & 1 \\
     1 & -1
     \end{bmatrix}
-$$.
+$$
 
 This gate sends states in superposition. Observe below how, by feeding
 it a base state $$\ket{0}$$ or $$\ket{1}$$, we are left with a superposition
@@ -291,7 +288,7 @@ $$
     \Big|-\frac{1}{\sqrt{2}}\Big|^2 = 0.5    
 $$
 
-A natural question to ask is: why the $$-1$ in the bottom right corner of
+A natural question to ask is: why the $$-1$$ in the bottom right corner of
 the matrix? This is because an important property of quantum gates
 (derived from the Hermiticity constraint) is that all gates should be
 reversible, i.e. if we let go to the same gate the output qubit we will
