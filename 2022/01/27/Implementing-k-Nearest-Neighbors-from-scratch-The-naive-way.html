@@ -1,0 +1,768 @@
+<!-- Mathjax Support -->
+<script type="text/javascript">
+  window.MathJax = {
+    tex: {
+      packages: ['base', 'ams', 'braket']
+    },
+    loader: {
+      load: ['ui/menu', '[tex]/ams', '[tex]/braket']
+    }
+  };
+  </script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Implementing k-Nearest Neighbors from scratch - The naive way - The Quantumist</title>
+<meta name="description" content="Implement k-NNs using only python and numpy">
+
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="The Quantumist">
+<meta property="og:title" content="Implementing k-Nearest Neighbors from scratch - The naive way">
+<meta property="og:url" content="https://the-quantumist.github.io/the-quantumist/2022/01/27/Implementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html">
+
+
+  <meta property="og:description" content="Implement k-NNs using only python and numpy">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-01-27T00:00:00+00:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://the-quantumist.github.io/the-quantumist/2022/01/27/Implementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "The Quantumist",
+      "url": "https://the-quantumist.github.io/the-quantumist/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/the-quantumist/feed.xml" type="application/atom+xml" rel="alternate" title="The Quantumist Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/the-quantumist/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/the-quantumist/">
+          The Quantumist
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/the-quantumist/tags">Posts by tag</a>
+            </li><li class="masthead__menu-item">
+              <a href="/the-quantumist/posts">Posts by date</a>
+            </li><li class="masthead__menu-item">
+              <a href="/the-quantumist/about">About</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="https://the-quantumist.github.io/the-quantumist/" itemprop="url"></a>
+    </h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Implementing k-Nearest Neighbors from scratch - The naive way">
+    <meta itemprop="description" content="Recently I started looking for a job in the field of data science and in order to practice with possible machine learning related questions I decided to implement the most common algorithms from scratch using only numpy. In the following weeks I would like to share these implementation in my blog; today I am gonna start from \(k\)-NN. This is one of the easiest algorithms in the machine learning literature, but actually it’s quite powerful!The approach is very simple:  The fit method just stores the training data.  At test time given a new sample compute the distances from all the samples in the training set.  Sort these distances and consider the closest \(k\) training elements to the test point (neighbors).  The label in the test point will simply be the most represented label among the \(k\) neighbors.">
+    <meta itemprop="datePublished" content="2022-01-27T00:00:00+00:00">
+    
+
+    <div class="tags">
+      
+      <span itemprop="keywords">
+        
+        <a class="tag"
+          href="/the-quantumist/tags#machine-learning">MACHINE LEARNING</a>,
+        
+        <a class="tag"
+          href="/the-quantumist/tags#algorithms">ALGORITHMS</a>
+        
+      </span>
+    </div>
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="https://the-quantumist.github.io/the-quantumist/2022/01/27/Implementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html" class="u-url" itemprop="url">Implementing k-Nearest Neighbors from scratch - The naive way
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          5 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <p>Recently I started looking for a job in the field of data science and in order to practice with possible machine learning related questions I decided to implement the most common algorithms from scratch using only numpy. In the following weeks I would like to share these implementation in my blog; today I am gonna start from \(k\)-NN. This is one of the easiest algorithms in the machine learning literature, but actually it’s quite powerful!
+The approach is very simple:</p>
+<ul>
+  <li>The fit method just stores the training data.</li>
+  <li>At test time given a new sample compute the distances from all the samples in the training set.</li>
+  <li>Sort these distances and consider the closest \(k\) training elements to the test point (neighbors).</li>
+  <li>The label in the test point will simply be the most represented label among the \(k\) neighbors.</li>
+</ul>
+
+<p>This high level explanation of the algorithm already provides a pseudo code for \(k\)-NN. Let’s implement it in python!</p>
+
+<p>*Note: in another blog post I describe \(k\)-NN and other ML algorithms in more detail. <a href="https://gialbo.github.io/Analysis-on-the-German-Credit-Risk-Dataset/#k-nearest-neighbors*">Check it out</a> if you are interested</p>
+
+<h2 id="computing-the-distances">Computing the distances</h2>
+
+<p>This is actually the first step in implementing \(k\)-NN. Various distance measures can be used, but the most common one is the Euclidean distance, so for this <em>homemade</em> version of the algorithm I am going to use that.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="c1"># returns the Euclidean distance of two vectors
+</span><span class="k">def</span> <span class="nf">compute_distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other_x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">other_x</span><span class="p">)</span>
+
+<span class="n">compute_distances</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5.196152422706632
+</code></pre></div></div>
+
+<h2 id="predicting-the-labels">Predicting the labels</h2>
+
+<p>Once we have all the distances we will simply sort them and compute the label:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># Takes as input a sorted list of tuples, each one in the form (distance, label) and the number of neighbors.
+</span>    <span class="c1"># returns the most represented label in the neighborhood
+</span>    <span class="k">def</span> <span class="nf">compute_label</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">labeled_distances</span><span class="p">[:</span><span class="n">n_neighbors</span><span class="p">]]</span>
+        <span class="n">labels_count</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">labels_count</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            
+        <span class="n">best_label</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">max_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
+                <span class="n">max_count</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="n">best_label</span> <span class="o">=</span> <span class="n">k</span>
+                
+        <span class="k">return</span> <span class="n">best_label</span>
+    
+    
+    <span class="n">labeled_distances</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">1.7542</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">3.523</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.124</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.123</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+    <span class="n">sorted_labeled_distances</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">compute_label</span><span class="p">(</span><span class="n">sorted_labeled_distances</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"The most represented label in the neighborhood is </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The most represented label in the neighborhood is 0
+</code></pre></div></div>
+
+<p>The code is quite simple, I used a list of tuples. Each element represents a training point in terms of: distance from the point we are evaluating and label of the training point. Given this list I sort it using as key the distance (first element in the tuple), then I simply take the first \(n_neighbors\) elements and look for the majority class inside the neighborhood. For doing this I keep in a dictionary the counts of the occurrences of each labels and then I select the label with the maximum count.</p>
+
+<h2 id="putting-everything-together">Putting everything together</h2>
+
+<p>Basically the algorithm is implemented, the next step is putting everything inside a class and repeat the implemented operations for each point in the training and test set:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomemadeKNNs</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">n_neighbors</span>
+    
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">train_data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_s</span><span class="p">,</span> <span class="n">y_s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)]</span>
+        
+    
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+            <span class="n">labeled_distances</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">train_sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">train_data</span><span class="p">:</span>
+                <span class="n">distance</span> <span class="o">=</span> <span class="n">HomemadeKNNs</span><span class="p">.</span><span class="n">compute_distances</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">train_sample</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">labeled_distances</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">distance</span><span class="p">,</span> <span class="n">train_sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">labeled_distances</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">y_hat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">HomemadeKNNs</span><span class="p">.</span><span class="n">compute_label</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">n_neighbors</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">y_hat</span>
+                    
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_distances</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other_x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">other_x</span><span class="p">)</span>
+    
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_label</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">labeled_distances</span><span class="p">[:</span><span class="n">n_neighbors</span><span class="p">]]</span>
+        <span class="n">labels_count</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">labels_count</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            
+        <span class="n">best_label</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">max_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
+                <span class="n">max_count</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="n">best_label</span> <span class="o">=</span> <span class="n">k</span>
+                
+        <span class="k">return</span> <span class="n">best_label</span>
+
+</code></pre></div></div>
+
+<h2 id="testing-the-algorithm">Testing the algorithm</h2>
+
+<p>To test the algorithm I created a very simple 2D toy dataset consisting with only two labels.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="k">class</span> <span class="nc">SyntheticDataset2D</span><span class="p">():</span>
+    <span class="n">mean_0</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
+    <span class="n">std_0</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="mf">2.</span><span class="p">,</span> <span class="p">.</span><span class="mi">2</span><span class="p">))</span>    
+    <span class="n">mean_1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">std_1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span> <span class="p">.</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="n">n_classes</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span>
+        
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">samples_1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">samples_2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">samples_1</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">mean_0</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">std_0</span><span class="p">))</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">samples_2</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">mean_1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">std_1</span><span class="p">))</span>
+            
+        <span class="n">X1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">stack</span><span class="p">(</span><span class="n">samples_1</span><span class="p">).</span><span class="n">clip</span><span class="p">(</span><span class="o">-</span><span class="mf">4.99</span><span class="p">,</span> <span class="mf">4.99</span><span class="p">)</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">stack</span><span class="p">(</span><span class="n">samples_2</span><span class="p">).</span><span class="n">clip</span><span class="p">(</span><span class="o">-</span><span class="mf">4.99</span><span class="p">,</span> <span class="mf">4.99</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+    
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">plot_dataset</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">X1</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">110</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+m'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"Class 0"</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+c'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"Class 1"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">grid</span><span class="p">()</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">"X1"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">"X2"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dataset</span> <span class="o">=</span> <span class="n">SyntheticDataset2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">SyntheticDataset2D</span><span class="p">.</span><span class="n">plot_dataset</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/the-quantumist/assets/images/2022-01-27-Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way/blogpost_15_0.png" alt="png" /></p>
+
+<p>Let’s see if everything works fine</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model</span> <span class="o">=</span> <span class="n">HomemadeKNNs</span><span class="p">()</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># Each time we call dataset.generate() data would be slightly different, but belonging to the same distribution
+</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SyntheticDataset2D</span><span class="p">.</span><span class="n">plot_dataset</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/the-quantumist/assets/images/2022-01-27-Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way/blogpost_18_0.png" alt="png" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">==</span> <span class="n">y_test</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"The accuracy of the obtained model is </span><span class="si">{</span><span class="n">accuracy</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The accuracy of the obtained model is 0.99
+</code></pre></div></div>
+
+<p>Our model seems to work pretty well. Another cool thing to is to plot the decision boundary and the training set on top to see what training samples are not classified correctly:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">plot_decision_boundary</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_vals</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">max_vals</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
+    <span class="n">min_vals</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">max_vals</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x1grid</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">x2grid</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x1grid</span><span class="p">,</span> <span class="n">x2grid</span><span class="p">)</span>
+    <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">xx</span><span class="p">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">yy</span><span class="p">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span><span class="p">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">r1</span><span class="p">),</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">r2</span><span class="p">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">r2</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">r1</span><span class="p">,</span><span class="n">r2</span><span class="p">))</span>
+    <span class="n">zz</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">grid</span><span class="p">).</span><span class="n">reshape</span><span class="p">(</span><span class="n">xx</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">110</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'RdBu'</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">X1</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">X2</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+m'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"class 0"</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+c'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"class 1"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">"X1"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">"X2"</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="p">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot_decision_boundary</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/the-quantumist/assets/images/2022-01-27-Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way/blogpost_22_0.png" alt="png" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>That’s all for this very simple implementation of \(k\)-NN. Of course there exists various alternatives to implement the algorithm in a faster way. I was thinking to realize a part \(2\) of this article in which I implement a more complex version of \(k\)-NN using the \(k\)-\(d\) tree. Let me know if you liked this post and if I should do more articles on the topic by sending me an email: gilbertomanunza@gmail.com</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-01-27T00:00:00+00:00">January 27, 2022</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Implementing+k-Nearest+Neighbors+from+scratch+-+The+naive+way%20https%3A%2F%2Fthe-quantumist.github.io%2Fthe-quantumist%2F2022%2F01%2F27%2FImplementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fthe-quantumist.github.io%2Fthe-quantumist%2F2022%2F01%2F27%2FImplementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fthe-quantumist.github.io%2Fthe-quantumist%2F2022%2F01%2F27%2FImplementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/the-quantumist/jekyll%20features/2018/06/23/last-updated-at.html" class="pagination--pager" title="Jekyll Features: Last Modified At
+">Previous</a>
+    
+    
+      <a href="/the-quantumist/2022/05/15/Quarto-Test.html" class="pagination--pager" title="Quarto Test
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You May Also Enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/the-quantumist/2022/11/01/quantum-computing-for-computer-engineers-part-1.html" rel="permalink">Quantum Computing for Computer Engineers
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          10 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Here’s the thing about Quantum Computing: it is one of the most
+interesting and promising fields of research, but at the same time one
+of the most obscure. T...</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/the-quantumist/2022/05/15/Quarto-Test.html" rel="permalink">Quarto Test
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">Quarto Basics
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/the-quantumist/jekyll%20features/2018/06/23/last-updated-at.html" rel="permalink">Jekyll Features: Last Modified At
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">This post shows how to use the ‘last modified at’ field.
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/the-quantumist/edge%20case/2016/07/20/many-tags.html" rel="permalink">Edge Case: Many Tags
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+
+    
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          less than 1 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">This post has many tags.
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    
+      <li><a href="/the-quantumist/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 The Quantumist. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/the-quantumist/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

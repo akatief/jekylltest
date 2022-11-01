@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://the-quantumist.github.io/the-quantumist/feed.xml" rel="self" type="application/atom+xml" /><link href="https://the-quantumist.github.io/the-quantumist/" rel="alternate" type="text/html" /><updated>2022-11-01T22:34:35+00:00</updated><id>https://the-quantumist.github.io/the-quantumist/feed.xml</id><title type="html">The Quantumist</title><subtitle>A blog about quantum computers, machine learning and more.</subtitle><author><name>Federico Tiblias, Gilberto Manunza</name></author><entry><title type="html">Quantum Computing for Computer Engineers</title><link href="https://the-quantumist.github.io/the-quantumist/2022/11/01/quantum-computing-for-computer-engineers-part-1.html" rel="alternate" type="text/html" title="Quantum Computing for Computer Engineers" /><published>2022-11-01T00:00:00+00:00</published><updated>2022-11-01T00:00:00+00:00</updated><id>https://the-quantumist.github.io/the-quantumist/2022/11/01/quantum-computing-for-computer-engineers-part-1</id><content type="html" xml:base="https://the-quantumist.github.io/the-quantumist/2022/11/01/quantum-computing-for-computer-engineers-part-1.html"><![CDATA[<p>Here’s the thing about Quantum Computing: it is one of the most
+interesting and promising fields of research, but at the same time one
+of the most obscure. The idea of building a computer using the sometimes
+counter-intuitive laws of quantum mechanics is quite old, and since the
+80s people are developing a quantum computation theory. One of the first
+reasons why this could be relevant is the inherent difficulty of
+simulating quantum systems on classical computers (as pointed out by
+Feynman himself in \(1982\)). Secondly, a computer built using the rules
+of quantum mechanics can, in theory, solve a particular set of problems
+way faster than a standard computer. For example, it could search an
+element in a generic vector in \(O(\sqrt{n})\)!</p>
+
+<p>Quantum computers are not only theoretical devices, they actually exist
+and have been built by companies in the quest of developing this new and
+completely different technology. Demonstrating that a quantum computer
+can solve a problem more efficiently than a standard computer, however,
+is a no easy task, this is the so called quantum supremacy problem. In a
+paper from 2019, Google announced that it had achieved for the first
+time quantum supremacy. Since then, papers were published showing how
+the results claimed by Google were beaten using new techniques to
+simulate quantum computers on standard supercomputers. Competition is
+fierce and the quest to find quantum algorithms able to outperform
+standard computers is still on.</p>
+
+<p>In this article we are going to introduce the basis of quantum computing
+theory, with some examples and a little bit of math. The article is
+meant for people with a general knowledge of linear algebra and computer
+science, but zero knowledge of quantum physics. Oftentimes, introductory
+explanations on quantum computing are either too basic, using
+simplifying metaphors that don’t really correspond to how things
+actually work, or too advanced, cluttering the reader with a
+mathematical overhead that is not really required to understand and use
+these concepts, at least at first. Our purpose is to bridge the divide
+between these two explanations, giving you a clear picture of these
+abstract concepts while reducing the math to an accessible amount.</p>
+
+<h2 id="the-qubit">The Qubit</h2>
+
+<p>Let’s start with the basics. In classical theory of computation, the
+basic element is the bit, it’s a simple object that can assume either
+value \(0\) or \(1\). Well, in quantum we have an analogous: the quantum bit
+or qubit for short. Just as the standard bit has two states: \(0\) and \(1\)
+a qubit can have two states: \(\ket{0}\) and \(\ket{1}\). We represent these
+simple states with 2-element vectors. The weird \(\ket{\cdot}\) notation
+is a short way of representing a vector and is called the <em>Dirac</em> notation. Our
+base states are thus:</p>
+
+\[\ket{0} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\;\; 
+    \ket{1} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\]
+
+<p>The thingy about qubits is that they can be in states other than
+\(\ket{0}\) or \(\ket{1}\). In fact, they can be in <em>any</em> linear combinations of
+these states, also known as <em>superpositions</em>:</p>
+
+\[\ket{\psi} = \alpha\ket{0} + \beta\ket{1} = 
+    \alpha\begin{bmatrix} 1 \\ 0 \end{bmatrix} + \beta\begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} \alpha \\ \beta \end{bmatrix}\]
+
+<p>where \(\alpha\) and \(\beta\) are two complex numbers. For now you can
+think of them as real numbers, you’ll see that not much is lost. In math
+terms, you can see a qubit as a vector in a \(2\)-D space, where the
+special states \(\ket{0}\) and \(\ket{1}\) are the so called computational
+basis states.</p>
+
+<p>Pretty easy until now, right? Well it turns out that qubit have another
+relevant difference with their classical counterpart. When reading the
+value of a bit this can be in just two states: either \(0\) or \(1\). When
+we try to read a qubit (also called <em>measurement</em>) we find that we <em>can not</em> retrieve directly
+its values \(\alpha\) and \(\beta\), also in this case we only get either a
+\(0\) or \(1\). So where is the difference? While classical bits always
+exist in some definite state, qubits in superposition exist in multiple
+states <em>at the same time</em>. This is counter-intuitive and pretty far from what we observe
+in our daily lives. This does not mean that qubits are secretly in some
+state we don’t know until we take a look. This is an inherent property
+of nature: some things are not defined until they are measured. If we
+were to repeat a measurement multiple times we would observe that
+sometimes we land on \(0\) and sometimes we land on \(1\), with
+probabilities \(|\alpha|^2\) and \(|\beta|^2\) respectively. A qubit can be seen as a “list” of probabilities of its outcomes (more properly called <em>distribution</em>). Since probabilities sum to \(1\), we find that for all qubits:</p>
+
+\[|\alpha|^2+|\beta|^2=1\]
+
+<p>For example let’s consider the following qubits:</p>
+
+\[\ket{A} = 
+        \begin{bmatrix} 
+            \frac{1}{\sqrt{2}} \\[5pt]
+            -\frac{1}{\sqrt{2}} 
+        \end{bmatrix}
+    \longrightarrow \Big| \frac{1}{\sqrt{2}} \Big|^2 + \Big|-\frac{1}{\sqrt{2}}\Big|^2 = 1\]
+
+\[\ket{B} = 
+        \begin{bmatrix}
+        1 \\[5pt]
+        1 
+        \end{bmatrix} 
+    \longrightarrow 2 \neq 1\]
+
+<p>Notice how in the example shown above, \(\ket{A}\) is a valid qubit, while \(\ket{B}\) is not, since its values don’t sum to \(1\). Also observe how values inside state vectors can be negative and still produce valid probabilities (we are taking a squared norm, after all).</p>
+
+<p>Observe also how qubits can encode values that have an infinite number
+of decimal digits at no extra cost. If we keep qubits in superposition
+we have an infinite precision representation of numbers:</p>
+
+\[\ket{A} = 
+        \begin{bmatrix} 
+            \frac{1}{\sqrt{2}} \\[5pt]
+            -\frac{1}{\sqrt{2}} 
+        \end{bmatrix} =
+        \begin{bmatrix} 
+            0.7071... \\[5pt]
+            -0.7071... 
+        \end{bmatrix}\]
+
+<p>How great this is! But as soon as we measure a qubit, some part of it is
+lost. We go from a potentially infinite amount of information to a
+single bit. This means there is a sort of <em>hidden</em> information encoded somewhere,
+but we can see just a part of it. This information actually exists and
+we can perform computations with it (this is the whole point of quantum
+computing). In a nutshell, the goal of quantum computing is to find
+clever ways to extract this hidden information in the most efficient way
+possible.</p>
+
+<p>An useful analogy for understanding the qubit is the Schrödinger’s cat
+(if you don’t know about this thought experiment, more info can be found <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger%27s_cat">here</a>). To
+recap what the experiment is about: let’s imagine to put a cat, a flask
+of poison and a source of radiation in a box. The source of radiation is
+an atom in a superposition of \(\ket{decayed}\) and \(\ket{not\,decayed}\).
+If a Geiger counter detects radioactivity it causes the release of
+poison, thus killing the cat. The point is that we don’t know when the
+Geiger counter will detect radioactivity (n.d.r. caused by a single atom
+decaying). So if we close the box we don’t know if the cat it’s still
+alive or dead. We can say that the cat is in a superposition of these
+states, being both alive and dead at the same time, like a qubit can
+be both \(\ket{0}\) and \(\ket{1}\). The point is that, when we eventually
+open the box, the cat can not be in a mixture of the two states, it will
+be alive or dead, exactly how the qubit, when measured, can just be \(0\) or \(1\). Why does this state collapse happens? Nobody knows, but this how
+things work, you know.</p>
+
+<p>Back to our math, we said that the values \(|\alpha|^2+|\beta|^2=1\), so a
+qubit can be seen as a unit vector in a two dimensional complex space,
+thus we may rewrite the qubit as:</p>
+
+\[\ket{\psi}=e^{i\gamma}\left(\cos\frac{\theta}{2}\ket{0}+e^{i\varphi}\sin\frac{\theta}{2}\ket{1}\right)\]
+
+<p>with \(\theta\), \(\varphi\), \(\gamma\) real numbers. Actually we can ignore the
+factor \(e^{i\gamma}\) (the reason why is outside the scope of this
+article), thus rewriting the qubit as:</p>
+
+\[\ket{\psi}=\cos\frac{\theta}{2}\ket{0}+e^{i\varphi}\sin\frac{\theta}{2}\ket{1}\]
+
+<p>We can see the qubit as a point in the 3-\(D\) unit sphere, also called
+Bloch sphere, this visualization is often used in quantum computing,
+even if it can not be generalized to multiple qubit systems.</p>
+
+<div id="fig-bloch">
+
+<div ref-parent="fig-bloch">
+
+<a href="https://en.wikipedia.org/wiki/Bloch_sphere" width="80%"><img src="images/Bloch_sphere.svg.png" /></a>
+
+</div>
+
+Figure 1: A Bloch sphere
+
+</div>
+
+<h2 id="quantum-gates">Quantum Gates</h2>
+
+<p>We have our qubit, the basic quantum computational element, now we
+should introduce how to use it. Simple! We can use quantum gates: just
+as classical computers have logical gates to manipulate information,
+quantum computers have quantum gates. Let’s keep it simple for now and
+consider just single bit gates. In classical computation theory the only
+interesting single bit gate is the NOT, providing the mapping \(0\to1\),
+\(1\to0\). There are also three other single bit gates: Identity, Set to
+\(0\) and Set to \(1\), but they are not that interesting.</p>
+
+<p>Can we imagine an analogous quantum NOT gate? This would be a gate that
+inverts the state \(\ket{0}\) to \(\ket{1}\) and vice versa. The problem
+here is that specifying an action on the states \(\ket{0}\) and \(\ket{1}\)
+does not tell anything about what happens to the superposition of these
+two states. The quantum NOT on the other hand acts linearly, this means
+that it takes a qubit in the state:</p>
+
+\[\ket{\psi} = \alpha\ket{0} + \beta\ket{1}\]
+
+<p>and outputs the qubit:</p>
+
+\[\ket{\psi} = \beta\ket{0} + \alpha\ket{1}\]
+
+<p>Actually all quantum gates, not just the NOT, act in a linear fashion.
+This is a general property of quantum operators. Since a quantum gate
+acts linearly, we can represent it in a matrix form. For example, here
+is the quantum NOT we described earlier:</p>
+
+\[X = \begin{bmatrix}
+0 &amp; 1\\
+1 &amp; 0
+\end{bmatrix}\]
+
+<p>This is how the gate operates in matricial form:</p>
+
+\[X\begin{bmatrix}\alpha \\ \beta\end{bmatrix}
+    =
+    \begin{bmatrix}
+0 &amp; 1\\
+1 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}\alpha \\ \beta\end{bmatrix}
+=
+\begin{bmatrix}\beta \\ \alpha\end{bmatrix}\]
+
+<p>That’s quite interesting: we can describe quantum gates by matrices, but
+what are the property that these matrices should have? Well, for every
+qubit with parameters \(\alpha\) and \(\beta\) we have the constraint
+\(|\alpha|^2+|\beta|^2=1\), this means that if we let our valid qubit go
+through a quantum gate then we want a valid qubit on the way out, with
+squared values that sum to 1. With a little bit of linear algebra it is
+possible to show that for a matrix \(U\) to be a valid quantum gate it
+should have the property: \(U^{\dagger}U=I\). \(U^{\dagger}\) is the <em>adjoint</em>
+matrix of \(U\) (also called <em>Hermitian transpose</em>), obtained by taking the transpose of \(U\) and complex
+conjugating it. This constraint is called Hermiticity, and any matrix
+that satisfy it is a valid quantum gate! This means that there many
+non-trivial single bit quantum gates.</p>
+
+<p>For example a very important gate is the Hadamard gate:</p>
+
+\[H = \frac{1}{\sqrt{2}}\begin{bmatrix}
+    1 &amp; 1 \\
+    1 &amp; -1
+    \end{bmatrix}\]
+
+<p>This gate sends states in superposition. Observe below how, by feeding
+it a base state \(\ket{0}\) or \(\ket{1}\), we are left with a superposition
+with a \(50\%\) chance of landing on \(0\) and a \(50\%\) chance of landing on
+\(1\).</p>
+
+\[H\begin{bmatrix}1 \\ 0\end{bmatrix}
+    =
+    \begin{bmatrix}\frac{1}{\sqrt{2}} \\[5pt] \frac{1}{\sqrt{2}}\end{bmatrix}\]
+
+\[H\begin{bmatrix}0 \\ 1\end{bmatrix}
+    =
+    \begin{bmatrix}\frac{1}{\sqrt{2}} \\[5pt] -\frac{1}{\sqrt{2}}\end{bmatrix}\]
+
+\[\Big| \frac{1}{\sqrt{2}} \Big|^2 = 
+    \Big|-\frac{1}{\sqrt{2}}\Big|^2 = 0.5\]
+
+<p>A natural question to ask is: why the \(-1\) in the bottom right corner of
+the matrix? This is because an important property of quantum gates
+(derived from the Hermiticity constraint) is that all gates should be
+reversible, i.e. if we let go to the same gate the output qubit we will
+end up with the original one. This is actually an important property of
+quantum phisics that emerges in multiple situations.</p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>In this introductory article we gave you a taste of quantum computing
+and we introduced some fundamental concepts and notation. Probably
+you’ll be quite confused at this point. Don’t worry, it’s normal.
+Quantum computing is hard to grasp at first, but if you decide to delve
+deeper into it, things will make more and more sense. There are many
+reasons for doing so: one can be personal interest, another can be the
+fact that investing time in learning these concepts can be very
+strategic. Many large companies have invested millions into this field,
+and breakthroughs happen by the day. Whatever your reason, if you want
+to go deeper we published on our blog a part \(2\) of this article. Here
+we kept the math simple and intuitive, while in part \(2\) we focus more
+on the math formalism and introduce some other important concepts. Don’t
+be scared: if you have a general knowledge of computer science and
+linear algebra you’ll be able to follow it!</p>]]></content><author><name>Gilberto Manunza</name></author><category term="Quantum Computing" /><category term="Linear Algebra" /><summary type="html"><![CDATA[Here’s the thing about Quantum Computing: it is one of the most interesting and promising fields of research, but at the same time one of the most obscure. The idea of building a computer using the sometimes counter-intuitive laws of quantum mechanics is quite old, and since the 80s people are developing a quantum computation theory. One of the first reasons why this could be relevant is the inherent difficulty of simulating quantum systems on classical computers (as pointed out by Feynman himself in \(1982\)). Secondly, a computer built using the rules of quantum mechanics can, in theory, solve a particular set of problems way faster than a standard computer. For example, it could search an element in a generic vector in \(O(\sqrt{n})\)!]]></summary></entry><entry><title type="html">Quarto Test</title><link href="https://the-quantumist.github.io/the-quantumist/2022/05/15/Quarto-Test.html" rel="alternate" type="text/html" title="Quarto Test" /><published>2022-05-15T00:00:00+00:00</published><updated>2017-02-13T16:00:00+00:00</updated><id>https://the-quantumist.github.io/the-quantumist/2022/05/15/Quarto-Test</id><content type="html" xml:base="https://the-quantumist.github.io/the-quantumist/2022/05/15/Quarto-Test.html"><![CDATA[<h1 id="quarto-basics">Quarto Basics</h1>
+
+<p>For a demonstration of a line plot on a polar axis, see
+<a href="#fig-polar">Figure 1</a>.</p>
+
+<figure>
+<img src="hello_files/figure-gfm/fig-polar-output-1.png" id="fig-polar" alt="Figure 1: A line plot on a polar axis" />
+<figcaption aria-hidden="true">Figure 1: A line plot on a polar
+axis</figcaption>
+</figure>
+
+<p>This is a qubit: \(\ket{0}\)</p>
+
+\[\ket{0} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\; 
+    \ket{1} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\]]]></content><author><name>Federico Tiblias, Gilberto Manunza</name></author><category term="Template" /><summary type="html"><![CDATA[Quarto Basics]]></summary></entry><entry><title type="html">Implementing k-Nearest Neighbors from scratch - The naive way</title><link href="https://the-quantumist.github.io/the-quantumist/2022/01/27/Implementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html" rel="alternate" type="text/html" title="Implementing k-Nearest Neighbors from scratch - The naive way" /><published>2022-01-27T00:00:00+00:00</published><updated>2022-01-27T00:00:00+00:00</updated><id>https://the-quantumist.github.io/the-quantumist/2022/01/27/Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way</id><content type="html" xml:base="https://the-quantumist.github.io/the-quantumist/2022/01/27/Implementing-k-Nearest-Neighbors-from-scratch-The-naive-way.html"><![CDATA[<p>Recently I started looking for a job in the field of data science and in order to practice with possible machine learning related questions I decided to implement the most common algorithms from scratch using only numpy. In the following weeks I would like to share these implementation in my blog; today I am gonna start from \(k\)-NN. This is one of the easiest algorithms in the machine learning literature, but actually it’s quite powerful!
+The approach is very simple:</p>
+<ul>
+  <li>The fit method just stores the training data.</li>
+  <li>At test time given a new sample compute the distances from all the samples in the training set.</li>
+  <li>Sort these distances and consider the closest \(k\) training elements to the test point (neighbors).</li>
+  <li>The label in the test point will simply be the most represented label among the \(k\) neighbors.</li>
+</ul>
+
+<p>This high level explanation of the algorithm already provides a pseudo code for \(k\)-NN. Let’s implement it in python!</p>
+
+<p>*Note: in another blog post I describe \(k\)-NN and other ML algorithms in more detail. <a href="https://gialbo.github.io/Analysis-on-the-German-Credit-Risk-Dataset/#k-nearest-neighbors*">Check it out</a> if you are interested</p>
+
+<h2 id="computing-the-distances">Computing the distances</h2>
+
+<p>This is actually the first step in implementing \(k\)-NN. Various distance measures can be used, but the most common one is the Euclidean distance, so for this <em>homemade</em> version of the algorithm I am going to use that.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="c1"># returns the Euclidean distance of two vectors
+</span><span class="k">def</span> <span class="nf">compute_distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other_x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">other_x</span><span class="p">)</span>
+
+<span class="n">compute_distances</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5.196152422706632
+</code></pre></div></div>
+
+<h2 id="predicting-the-labels">Predicting the labels</h2>
+
+<p>Once we have all the distances we will simply sort them and compute the label:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># Takes as input a sorted list of tuples, each one in the form (distance, label) and the number of neighbors.
+</span>    <span class="c1"># returns the most represented label in the neighborhood
+</span>    <span class="k">def</span> <span class="nf">compute_label</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">labeled_distances</span><span class="p">[:</span><span class="n">n_neighbors</span><span class="p">]]</span>
+        <span class="n">labels_count</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">labels_count</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            
+        <span class="n">best_label</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">max_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
+                <span class="n">max_count</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="n">best_label</span> <span class="o">=</span> <span class="n">k</span>
+                
+        <span class="k">return</span> <span class="n">best_label</span>
+    
+    
+    <span class="n">labeled_distances</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">1.7542</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">3.523</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.124</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.123</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+    <span class="n">sorted_labeled_distances</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">compute_label</span><span class="p">(</span><span class="n">sorted_labeled_distances</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"The most represented label in the neighborhood is </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The most represented label in the neighborhood is 0
+</code></pre></div></div>
+
+<p>The code is quite simple, I used a list of tuples. Each element represents a training point in terms of: distance from the point we are evaluating and label of the training point. Given this list I sort it using as key the distance (first element in the tuple), then I simply take the first \(n_neighbors\) elements and look for the majority class inside the neighborhood. For doing this I keep in a dictionary the counts of the occurrences of each labels and then I select the label with the maximum count.</p>
+
+<h2 id="putting-everything-together">Putting everything together</h2>
+
+<p>Basically the algorithm is implemented, the next step is putting everything inside a class and repeat the implemented operations for each point in the training and test set:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomemadeKNNs</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">n_neighbors</span>
+    
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">train_data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x_s</span><span class="p">,</span> <span class="n">y_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_s</span><span class="p">,</span> <span class="n">y_s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)]</span>
+        
+    
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+            <span class="n">labeled_distances</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">train_sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">train_data</span><span class="p">:</span>
+                <span class="n">distance</span> <span class="o">=</span> <span class="n">HomemadeKNNs</span><span class="p">.</span><span class="n">compute_distances</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">train_sample</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">labeled_distances</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">distance</span><span class="p">,</span> <span class="n">train_sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">labeled_distances</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">y_hat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">HomemadeKNNs</span><span class="p">.</span><span class="n">compute_label</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">n_neighbors</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">y_hat</span>
+                    
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_distances</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">other_x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">other_x</span><span class="p">)</span>
+    
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_label</span><span class="p">(</span><span class="n">labeled_distances</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">):</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">labeled_distances</span><span class="p">[:</span><span class="n">n_neighbors</span><span class="p">]]</span>
+        <span class="n">labels_count</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">labels_count</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            
+        <span class="n">best_label</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">max_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">labels_count</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
+                <span class="n">max_count</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="n">best_label</span> <span class="o">=</span> <span class="n">k</span>
+                
+        <span class="k">return</span> <span class="n">best_label</span>
+
+</code></pre></div></div>
+
+<h2 id="testing-the-algorithm">Testing the algorithm</h2>
+
+<p>To test the algorithm I created a very simple 2D toy dataset consisting with only two labels.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="k">class</span> <span class="nc">SyntheticDataset2D</span><span class="p">():</span>
+    <span class="n">mean_0</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
+    <span class="n">std_0</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="mf">2.</span><span class="p">,</span> <span class="p">.</span><span class="mi">2</span><span class="p">))</span>    
+    <span class="n">mean_1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">std_1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span> <span class="p">.</span><span class="mi">2</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="n">n_classes</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span>
+        
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">samples_1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">samples_2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">samples_1</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">mean_0</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">std_0</span><span class="p">))</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">samples_2</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">mean_1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">std_1</span><span class="p">))</span>
+            
+        <span class="n">X1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">stack</span><span class="p">(</span><span class="n">samples_1</span><span class="p">).</span><span class="n">clip</span><span class="p">(</span><span class="o">-</span><span class="mf">4.99</span><span class="p">,</span> <span class="mf">4.99</span><span class="p">)</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">stack</span><span class="p">(</span><span class="n">samples_2</span><span class="p">).</span><span class="n">clip</span><span class="p">(</span><span class="o">-</span><span class="mf">4.99</span><span class="p">,</span> <span class="mf">4.99</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="p">.</span><span class="n">n_samples</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+    
+    <span class="o">@</span><span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">plot_dataset</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">X1</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">X2</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">110</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+m'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"Class 0"</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+c'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"Class 1"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">grid</span><span class="p">()</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">"X1"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">"X2"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dataset</span> <span class="o">=</span> <span class="n">SyntheticDataset2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">SyntheticDataset2D</span><span class="p">.</span><span class="n">plot_dataset</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/the-quantumist/assets/images/2022-01-27-Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way/blogpost_15_0.png" alt="png" /></p>
+
+<p>Let’s see if everything works fine</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model</span> <span class="o">=</span> <span class="n">HomemadeKNNs</span><span class="p">()</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># Each time we call dataset.generate() data would be slightly different, but belonging to the same distribution
+</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SyntheticDataset2D</span><span class="p">.</span><span class="n">plot_dataset</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/the-quantumist/assets/images/2022-01-27-Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way/blogpost_18_0.png" alt="png" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">==</span> <span class="n">y_test</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"The accuracy of the obtained model is </span><span class="si">{</span><span class="n">accuracy</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The accuracy of the obtained model is 0.99
+</code></pre></div></div>
+
+<p>Our model seems to work pretty well. Another cool thing to is to plot the decision boundary and the training set on top to see what training samples are not classified correctly:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">plot_decision_boundary</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_vals</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">max_vals</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
+    <span class="n">min_vals</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">max_vals</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x1grid</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">x2grid</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">max_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x1grid</span><span class="p">,</span> <span class="n">x2grid</span><span class="p">)</span>
+    <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">xx</span><span class="p">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">yy</span><span class="p">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span><span class="p">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">r1</span><span class="p">),</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">r2</span><span class="p">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">r2</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">r1</span><span class="p">,</span><span class="n">r2</span><span class="p">))</span>
+    <span class="n">zz</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">grid</span><span class="p">).</span><span class="n">reshape</span><span class="p">(</span><span class="n">xx</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">110</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'RdBu'</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">X1</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">X2</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+m'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"class 0"</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">X2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">'+c'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">"class 1"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">"X1"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">"X2"</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="p">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot_decision_boundary</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/the-quantumist/assets/images/2022-01-27-Implementing-k---Nearest-Neighbors-from-scratch---The-naive-way/blogpost_22_0.png" alt="png" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>That’s all for this very simple implementation of \(k\)-NN. Of course there exists various alternatives to implement the algorithm in a faster way. I was thinking to realize a part \(2\) of this article in which I implement a more complex version of \(k\)-NN using the \(k\)-\(d\) tree. Let me know if you liked this post and if I should do more articles on the topic by sending me an email: gilbertomanunza@gmail.com</p>]]></content><author><name>Federico Tiblias, Gilberto Manunza</name></author><category term="machine learning" /><category term="algorithms" /><summary type="html"><![CDATA[Implement k-NNs using only python and numpy]]></summary></entry><entry><title type="html">Jekyll Features: Last Modified At</title><link href="https://the-quantumist.github.io/the-quantumist/jekyll%20features/2018/06/23/last-updated-at.html" rel="alternate" type="text/html" title="Jekyll Features: Last Modified At" /><published>2018-06-23T00:00:00+00:00</published><updated>2017-02-13T16:00:00+00:00</updated><id>https://the-quantumist.github.io/the-quantumist/jekyll%20features/2018/06/23/last-updated-at</id><content type="html" xml:base="https://the-quantumist.github.io/the-quantumist/jekyll%20features/2018/06/23/last-updated-at.html"><![CDATA[<p>This post shows how to use the ‘last modified at’ field.</p>]]></content><author><name>Federico Tiblias, Gilberto Manunza</name></author><category term="Jekyll Features" /><category term="Template" /><summary type="html"><![CDATA[This post shows how to use the ‘last modified at’ field.]]></summary></entry><entry><title type="html">Edge Case: Many Tags</title><link href="https://the-quantumist.github.io/the-quantumist/edge%20case/2016/07/20/many-tags.html" rel="alternate" type="text/html" title="Edge Case: Many Tags" /><published>2016-07-20T00:00:00+00:00</published><updated>2017-02-13T16:00:00+00:00</updated><id>https://the-quantumist.github.io/the-quantumist/edge%20case/2016/07/20/many-tags</id><content type="html" xml:base="https://the-quantumist.github.io/the-quantumist/edge%20case/2016/07/20/many-tags.html"><![CDATA[<p>This post has many tags.</p>
+
+<p>This is an update to see if the date changes</p>]]></content><author><name>Federico Tiblias</name></author><category term="Edge Case" /><category term="8BIT" /><category term="alignment" /><category term="Articles" /><category term="captions" /><category term="categories" /><category term="chat" /><category term="comments" /><category term="content" /><category term="css" /><category term="dowork" /><category term="edge case" /><category term="embeds" /><category term="excerpt" /><category term="Fail" /><category term="featured image" /><category term="FTW" /><category term="Fun" /><category term="gallery" /><category term="html" /><category term="image" /><category term="Jekyll" /><category term="layout" /><category term="link" /><category term="Love" /><category term="markup" /><category term="Mothership" /><category term="Must Read" /><category term="Nailed It" /><category term="Pictures" /><category term="Post Formats" /><category term="quote" /><category term="standard" /><category term="Success" /><category term="Swagger" /><category term="Tags" /><category term="template" /><category term="title" /><category term="twitter" /><category term="Unseen" /><category term="video" /><category term="YouTube" /><category term="U:R:COOL" /><category term="C#" /><category term="Random tag to test" /><summary type="html"><![CDATA[This post has many tags.]]></summary></entry></feed>
